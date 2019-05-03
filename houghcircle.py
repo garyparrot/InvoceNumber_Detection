@@ -7,6 +7,10 @@ def half(img):
     h,w = img.shape
     return img[0:h//2,0:w]
 
+def showhist(img):
+    hist = cv2.calcHist([img],[0],None,[256],[0.0,255.0])
+    print(hist)
+
 def showimg(img):
     """ Display specified image """
     cv2.namedWindow('sub',cv2.WINDOW_NORMAL)
@@ -19,8 +23,10 @@ def operate(filename, show_prcoess = False):
     """圓偵測"""
 
     # 讀取圖片
-    img = cv2.imread(filename, 0)
+    img = cv2.imread(filename)
     origin_img = img.copy()
+    img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    img = cv2.equalizeHist(img)
     h,w = img.shape
 
     # 圖片比例達到發票長寬比時裁切一半
@@ -41,7 +47,7 @@ def operate(filename, show_prcoess = False):
     # kernel = cv2.getStructuringElement(cv2.MORPH_CROSS,(3, 3))
     kernel = np.array([[1,1,1],[1,1,1],[1,1,1]])
     img = cv2.dilate(img,kernel,iterations=10)
-    img = cv2.erode(img,kernel,iterations=25)
+    img = cv2.erode(img,kernel,iterations=35)
     if show_prcoess: showimg(img)
     cv2.imwrite('./result/erode.png', img)
 
@@ -53,6 +59,7 @@ def operate(filename, show_prcoess = False):
     # 圓偵測
     circles = cv2.HoughCircles(img, cv2.HOUGH_GRADIENT, 1, int(h*0.3), param1=1, param2=10, minRadius=int(w*0.5*2.8/4), maxRadius=int(w*0.5*3.2/4))
     if circles is None: 
+        showhist(origin_img)
         showimg(img)
         print("No Circle found.")
         return 0 
@@ -85,5 +92,5 @@ def testFile(filename):
     operate(filename,True)
 
 if __name__ == "__main__":
-    # testFile('./testcase/fuckit.jpg')
+    # testFile('./testcase/pic6.jpg')
     runTest()
