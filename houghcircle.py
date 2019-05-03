@@ -47,7 +47,7 @@ def operate(filename, show_prcoess = False):
     # kernel = cv2.getStructuringElement(cv2.MORPH_CROSS,(3, 3))
     kernel = np.array([[1,1,1],[1,1,1],[1,1,1]])
     img = cv2.dilate(img,kernel,iterations=10)
-    img = cv2.erode(img,kernel,iterations=35)
+    img = cv2.erode(img,kernel,iterations=25)
     if show_prcoess: showimg(img)
     cv2.imwrite('./result/erode.png', img)
 
@@ -59,7 +59,6 @@ def operate(filename, show_prcoess = False):
     # 圓偵測
     circles = cv2.HoughCircles(img, cv2.HOUGH_GRADIENT, 1, int(h*0.3), param1=1, param2=10, minRadius=int(w*0.5*2.8/4), maxRadius=int(w*0.5*3.2/4))
     if circles is None: 
-        showhist(origin_img)
         showimg(img)
         print("No Circle found.")
         return 0 
@@ -79,21 +78,26 @@ def operate(filename, show_prcoess = False):
     cv2.imwrite('./result/canny_result.png',gimg)
     return 1
 
-def runTest(show=False,test_size=10000):
-    """嘗試套用每個testcase內的圖片"""
+def runTest(dir='./testcase',show=False,test_size=10000):
+    """嘗試套用每個testcase內的圖片
+        dir: 測試資料夾的名稱
+        show: 是否顯示細部的處理過程
+        test_size: 要處理資料夾中多少張圖片，預設是一個很大的值
+    """
     count = 0
-    testfiles = os.listdir('./testcase')[:test_size]
+    testfiles = os.listdir(dir)[:test_size]
     for filename in testfiles:
-        filename = "./testcase/" + filename
+        filename = dir + "/" + filename
         print("Filename %s" % filename)
         count += operate(filename,show)
-
     print(count,"/",len(testfiles))
+
 
 def testFile(filename):
     """測試單張圖片"""
     operate(filename,True)
 
 if __name__ == "__main__":
-    testFile('./testcase/pic19.jpg')
-    # runTest()
+    # testFile('./testcase/pic19.jpg')
+    # runTest(dir="./bad_image", show=True)
+    runTest()
