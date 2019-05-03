@@ -1,0 +1,5 @@
+imageio==2.5.0
+networkx==2.3
+opencv-python==4.1.0.25
+PyWavelets==1.0.3
+scikit-image==0.15.0
