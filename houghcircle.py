@@ -66,14 +66,17 @@ def operate(filename, show_prcoess = False):
     circles = np.uint16(np.around(circles)) 
 
     # 畫出浮水印位置
-    #cimg = cv2.cvtColor(img, cv2.COLOR_GRAY2RGB)
+    gimg = cv2.cvtColor(img, cv2.COLOR_GRAY2RGB)
     cimg = origin_img
     for i in circles[0,:1]:
         cv2.circle(cimg,(i[0],i[1]),i[2],(0,255,0),2)
         cv2.circle(cimg,(i[0],i[1]),2,(0,0,255),3)
+        cv2.circle(gimg,(i[0],i[1]),i[2],(0,255,0),2)
+        cv2.circle(gimg,(i[0],i[1]),2,(0,0,255),3)
 
     showimg(cimg)
     cv2.imwrite('./result/result.png',cimg)
+    cv2.imwrite('./result/canny_result.png',gimg)
     return 1
 
 def runTest(show=False,test_size=10000):
@@ -92,5 +95,5 @@ def testFile(filename):
     operate(filename,True)
 
 if __name__ == "__main__":
-    # testFile('./testcase/pic6.jpg')
-    runTest()
+    testFile('./testcase/pic19.jpg')
+    # runTest()
